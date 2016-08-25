@@ -1,2 +1,2 @@
-# ATIS-Fetch
+# ATISFetch
 Fetches Real World D-ATISs
