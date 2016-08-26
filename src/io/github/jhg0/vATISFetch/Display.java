@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @SuppressWarnings({"UnusedDeclaration"})
 public class Display
@@ -133,7 +134,7 @@ public class Display
         try
         {
             for (File f : files)
-                Files.move(Paths.get(f.getPath()), Paths.get(configDirectory.getPath() + File.separator + f.getName()));
+                Files.move(Paths.get(f.getPath()), Paths.get(configDirectory.getPath() + File.separator + f.getName()), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception ignored)
         {
         }
