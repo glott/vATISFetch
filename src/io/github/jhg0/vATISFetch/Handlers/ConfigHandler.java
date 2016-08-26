@@ -52,12 +52,11 @@ public class ConfigHandler
             Object obj = parser.parse(new FileReader(System.getProperty("user.home") + "\\AppData\\Roaming\\vATIS\\Fetch\\" + air + ".json"));
             JSONObject jsonObject = (JSONObject) obj;
 
-            config[0] = "" + jsonObject.get("dep_arr");
-            config[1] = "" + jsonObject.get("has_notams");
-            config[2] = "" + jsonObject.get("notam_start");
+            config[0] = "" + jsonObject.get("has_notams");
+            config[1] = "" + jsonObject.get("notam_start");
 
             JSONArray ignore = (JSONArray) jsonObject.get("ignore");
-            for (Object anIgnore : ignore) config[3] += "" + anIgnore + ",";
+            for (Object anIgnore : ignore) config[2] += "" + anIgnore + ",";
             if (generalFetch.getText().contains("parse")) generalFetch.setText("");
         } catch (Exception ignored)
         {

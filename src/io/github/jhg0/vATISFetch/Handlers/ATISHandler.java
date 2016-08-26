@@ -51,30 +51,30 @@ public class ATISHandler
         String[] out = {"", ""};
         String[] tempGeneral = {"", ""};
 
-        if (config[3].length() > 1)
+        if (config[2].length() > 1)
         {
-            String[] ignore = config[3].split(",");
+            String[] ignore = config[2].split(",");
             for (String s : ignore)
                 for (int i = 0; i < 2; i++)
                     atis[i] = atis[i].replaceAll(s, "");
         }
 
-        if (config[1].equals("true") && atis[0].contains(config[2]))
+        if (config[0].equals("true") && atis[0].contains(config[1]))
         {
             String[] tempNotams = {"", ""};
             for (int i = 0; i < 2; i++)
-                tempNotams[i] = atis[i].substring(atis[i].indexOf(config[2]) + config[2].length(), atis[i].indexOf(" ...ADVS YOU"));
+                tempNotams[i] = atis[i].substring(atis[i].indexOf(config[1]) + config[1].length(), atis[i].indexOf(" ...ADVS YOU"));
             out[1] = tempNotams[0].length() > tempNotams[1].length() ? tempNotams[0] : tempNotams[1];
         }
         for (int i = 0; i < 2; i++)
         {
-            if (config[1].equals("true") && atis[0].contains(config[2]))
-                tempGeneral[i] = atis[i].substring(atis[i].indexOf(")") + 1, atis[i].indexOf(config[2]));
+            if (config[0].equals("true") && atis[0].contains(config[1]))
+                tempGeneral[i] = atis[i].substring(atis[i].indexOf(")") + 1, atis[i].indexOf(config[1]));
             else
                 tempGeneral[i] = atis[i].substring(atis[i].indexOf(")") + 1, atis[i].indexOf(" ...ADVS YOU"));
             tempGeneral[i] = tempGeneral[i].substring(tempGeneral[i].indexOf(". ") + 2);
         }
-        if (config[0].equals("true"))
+        if (!atis[0].equals(atis[1]))
             out[0] = tempGeneral[0] + tempGeneral[1];
         else
             out[0] = tempGeneral[0];
