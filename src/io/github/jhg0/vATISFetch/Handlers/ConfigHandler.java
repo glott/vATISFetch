@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
-import java.util.Iterator;
 
 public class ConfigHandler
 {
@@ -45,6 +44,7 @@ public class ConfigHandler
 
     public void parseConfig(String air, JTextArea generalFetch)
     {
+        if(air.equals("NONE")) return;
         JSONParser parser = new JSONParser();
         try
         {
