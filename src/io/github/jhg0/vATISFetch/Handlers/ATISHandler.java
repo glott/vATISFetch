@@ -12,6 +12,13 @@ public class ATISHandler
 {
 
     private String[] atis = {"", ""};
+    private WebHandler webHandler;
+
+    public ATISHandler()
+    {
+        webHandler = new WebHandler();
+        webHandler.init();
+    }
 
     @SuppressWarnings("unused")
     private static int regexIndexOf(String regex, String s)
@@ -21,27 +28,39 @@ public class ATISHandler
         return matcher.find() ? matcher.start() : -1;
     }
 
-    public void fetchATIS(String selectedItem, JTextArea notamFetch)
+    public void fetchATIS(String selectedItem, JTextArea notamFetch, boolean configLogic)
     {
         if (selectedItem == null) return;
         atis = new String[]{"", ""};
         System.setProperty("jsse.enableSNIExtension", "false");
         try
         {
-            URL url = new URL("https://webdatis.arinc.net/cgi-bin/datis/get_datis?station=" + selectedItem + "&sessionId=KXY9E2L&products=DATIS&arrdep=DEP");
-            HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            URL url = new URL(webHandler.getURL(selectedItem, configLogic) + "dep");
+            BufferedReader br;
+            if (url.toString().contains("https"))
+            {
+                HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            } else
+                br = new BufferedReader(new InputStreamReader(url.openStream()));
             String input;
             while ((input = br.readLine()) != null)
                 atis[0] += input + " ";
-            url = new URL("https://webdatis.arinc.net/cgi-bin/datis/get_datis?station=" + selectedItem + "&sessionId=KXY9E2L&products=DATIS&arrdep=ARR");
-            con = (HttpsURLConnection) url.openConnection();
-            br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            url = new URL(webHandler.getURL(selectedItem, configLogic) + "arr");
+            if (url.toString().contains("https"))
+            {
+                HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            } else
+                br = new BufferedReader(new InputStreamReader(url.openStream()));
             while ((input = br.readLine()) != null)
                 atis[1] += input + " ";
             br.close();
-        } catch (Exception ignored)
+            atis[0] = atis[0].replaceAll("\\s+", " ");
+            atis[1] = atis[1].replaceAll("\\s+", " ");
+        } catch (Exception ex)
         {
+            ex.printStackTrace();
             notamFetch.setText("Unable to fetch ATIS!");
         }
     }

@@ -42,9 +42,9 @@ public class ConfigHandler
         configSelection.setSelectedItem(null);
     }
 
-    public void parseConfig(String air, JTextArea generalFetch)
+    public boolean parseConfig(String air, JTextArea generalFetch)
     {
-        if(air.equals("NONE")) return;
+        if (air.equals("NONE")) return false;
         JSONParser parser = new JSONParser();
         try
         {
@@ -55,14 +55,17 @@ public class ConfigHandler
             config[0] = "" + jsonObject.get("has_notams");
             config[1] = "" + jsonObject.get("notam_start");
 
+
             JSONArray ignore = (JSONArray) jsonObject.get("ignore");
             for (Object anIgnore : ignore) config[2] += "" + anIgnore + ",";
             if (generalFetch.getText().contains("parse")) generalFetch.setText("");
-        } catch (Exception ignored)
+            return jsonObject.get("facility") != null && jsonObject.get("facility").equals("ZMA");
+        } catch (Exception ex)
         {
-            ignored.printStackTrace();
+            ex.printStackTrace();
             generalFetch.setText("Unable to parse config!");
         }
+        return false;
     }
 
     public String[] getConfig()
