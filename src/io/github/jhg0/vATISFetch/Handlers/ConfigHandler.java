@@ -49,16 +49,17 @@ public class ConfigHandler
         try
         {
             config = new String[]{"", "", "", ""};
-            Object obj = parser.parse(new FileReader(System.getProperty("user.home") + "\\AppData\\Roaming\\vATIS\\Fetch\\" + air + ".json"));
+            FileReader fr = new FileReader(System.getProperty("user.home") + "\\AppData\\Roaming\\vATIS\\Fetch\\" + air + ".json");
+            Object obj = parser.parse(fr);
             JSONObject jsonObject = (JSONObject) obj;
 
             config[0] = "" + jsonObject.get("has_notams");
             config[1] = "" + jsonObject.get("notam_start");
 
-
             JSONArray ignore = (JSONArray) jsonObject.get("ignore");
             for (Object anIgnore : ignore) config[2] += "" + anIgnore + ",";
             if (generalFetch.getText().contains("parse")) generalFetch.setText("");
+            fr.close();
             return jsonObject.get("facility") != null && jsonObject.get("facility").equals("ZMA");
         } catch (Exception ex)
         {
