@@ -1,4 +1,4 @@
-package io.github.jhg0.vATISFetch.Handlers;
+package io.github.glott.vATISFetch.Handlers;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.swing.*;
@@ -67,7 +67,7 @@ public class ATISHandler
 
     public String[] mergeATIS(String[] config)
     {
-        String[] out = {"", ""};
+        String[] out = {"", "", ""};
         String[] tempGeneral = {"", ""};
 
         if (config[2].length() > 1)
@@ -97,6 +97,7 @@ public class ATISHandler
             out[0] = tempGeneral[0] + tempGeneral[1];
         else
             out[0] = tempGeneral[0];
+        out[2] = !atis[1].replaceAll("INFO [A-Z] [0-2][0-9][0-9][0-9]Z", "").equals(atis[1]) ? atis[1].substring(atis[1].indexOf("INFO "), atis[1].indexOf("INFO ") + 12) : "Fetch ATIS";
         return out;
     }
 }

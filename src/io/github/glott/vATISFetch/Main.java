@@ -1,4 +1,4 @@
-package io.github.jhg0.vATISFetch;
+package io.github.glott.vATISFetch;
 
 public class Main
 {

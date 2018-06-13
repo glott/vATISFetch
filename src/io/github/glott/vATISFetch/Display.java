@@ -1,7 +1,7 @@
-package io.github.jhg0.vATISFetch;
+package io.github.glott.vATISFetch;
 
-import io.github.jhg0.vATISFetch.Handlers.ATISHandler;
-import io.github.jhg0.vATISFetch.Handlers.ConfigHandler;
+import io.github.glott.vATISFetch.Handlers.ATISHandler;
+import io.github.glott.vATISFetch.Handlers.ConfigHandler;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -71,6 +71,7 @@ public class Display
                         String[] out = atisHandler.mergeATIS(configHandler.getConfig());
                         generalFetch.setText(out[0]);
                         notamFetch.setText(out[1]);
+                        fetchButton.setText(out[2]);
                         return null;
                     }
 

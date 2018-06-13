@@ -1,4 +1,4 @@
-package io.github.jhg0.vATISFetch.Handlers;
+package io.github.glott.vATISFetch.Handlers;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -60,7 +60,7 @@ public class ConfigHandler
             for (Object anIgnore : ignore) config[2] += "" + anIgnore + ",";
             if (generalFetch.getText().contains("parse")) generalFetch.setText("");
             fr.close();
-            return jsonObject.get("facility") != null && jsonObject.get("facility").equals("ZMA");
+            return jsonObject.get("facility") != null && jsonObject.get("facility").equals("ZXX");
         } catch (Exception ex)
         {
             ex.printStackTrace();
