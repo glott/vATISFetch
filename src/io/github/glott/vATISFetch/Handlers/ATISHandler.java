@@ -72,7 +72,7 @@ public class ATISHandler
 
         if (config[2].length() > 1)
         {
-            String[] ignore = config[2].split(",");
+            String[] ignore = config[2].split("\t");
             for (String s : ignore)
                 for (int i = 0; i < 2; i++)
                     atis[i] = atis[i].replaceAll(s, "");

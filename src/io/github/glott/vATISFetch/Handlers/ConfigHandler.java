@@ -57,7 +57,7 @@ public class ConfigHandler
             config[1] = "" + jsonObject.get("notam_start");
 
             JSONArray ignore = (JSONArray) jsonObject.get("ignore");
-            for (Object anIgnore : ignore) config[2] += "" + anIgnore + ",";
+            for (Object anIgnore : ignore) config[2] += "" + anIgnore + "\t";
             if (generalFetch.getText().contains("parse")) generalFetch.setText("");
             fr.close();
             return jsonObject.get("facility") != null && jsonObject.get("facility").equals("ZXX");
