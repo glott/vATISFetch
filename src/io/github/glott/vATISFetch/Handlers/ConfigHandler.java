@@ -1,5 +1,6 @@
 package io.github.glott.vATISFetch.Handlers;
 
+import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -8,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
+import java.net.URL;
+import java.util.Scanner;
 
 public class ConfigHandler
 {
@@ -39,7 +42,10 @@ public class ConfigHandler
                 return;
             }
         }
+        String update = configSelection.getSelectedItem().toString();
         configSelection.setSelectedItem(null);
+        if (parseConfig(update, null))
+            runUpdate();
     }
 
     public boolean parseConfig(String air, JTextArea generalFetch)
@@ -58,13 +64,13 @@ public class ConfigHandler
 
             JSONArray ignore = (JSONArray) jsonObject.get("ignore");
             for (Object anIgnore : ignore) config[2] += "" + anIgnore + "\t";
-            if (generalFetch.getText().contains("parse")) generalFetch.setText("");
+            if (generalFetch != null && generalFetch.getText().contains("parse")) generalFetch.setText("");
             fr.close();
             return jsonObject.get("facility") != null && jsonObject.get("facility").equals("ZXX");
         } catch (Exception ex)
         {
             ex.printStackTrace();
-            generalFetch.setText("Unable to parse config!");
+            if (generalFetch != null) generalFetch.setText("Unable to parse config!");
         }
         return false;
     }
@@ -72,5 +78,29 @@ public class ConfigHandler
     public String[] getConfig()
     {
         return this.config;
+    }
+
+    private void runUpdate()
+    {
+        try
+        {
+            File temp = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\vATIS\\Fetch\\configs.txt");
+            temp.createNewFile();
+            FileUtils.copyURLToFile(new URL("http://glott.github.io/vaf/configs/configs.txt"), temp);
+            Scanner sc = new Scanner(temp);
+            while (sc.hasNext())
+            {
+                String airport = sc.next();
+                URL down = new URL("http://glott.github.io/vaf/configs/" + airport + ".json");
+                File f = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\vATIS\\Fetch\\" + airport + ".json");
+                if (f.exists())
+                    FileUtils.copyURLToFile(down, f);
+            }
+            sc.close();
+            temp.delete();
+        } catch (Exception ignored)
+        {
+           
+        }
     }
 }
