@@ -100,7 +100,7 @@ public class ConfigHandler
             temp.delete();
         } catch (Exception ignored)
         {
-           
         }
+
     }
 }
