@@ -2,7 +2,7 @@
 
 _by Josh Glottmann_
 
-**Version 1.2.1** - 6/16/2018
+**Version 1.3.0** - 05/06/2020
 
 Fetches AIRNC D-ATISs for use with [vATIS](http://radarcontact.me) by [Justin Shannon](https://github.com/JustinShannon)
 

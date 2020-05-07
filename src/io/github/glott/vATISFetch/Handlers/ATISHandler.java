@@ -35,7 +35,11 @@ public class ATISHandler
         System.setProperty("jsse.enableSNIExtension", "false");
         try
         {
-            URL url = new URL(webHandler.getURL(selectedItem, configLogic) + "dep");
+            String url_dep = webHandler.getURL(selectedItem, configLogic) + "dep";
+            if(url_dep.contains("clowd")){
+                url_dep += "arture";
+            }
+            URL url = new URL(url_dep);
             BufferedReader br;
             if (url.toString().contains("https"))
             {
@@ -46,7 +50,13 @@ public class ATISHandler
             String input;
             while ((input = br.readLine()) != null)
                 atis[0] += input + " ";
-            url = new URL(webHandler.getURL(selectedItem, configLogic) + "arr");
+
+            String url_arr = webHandler.getURL(selectedItem, configLogic) + "arr";
+            if(url_arr.contains("clowd")){
+                url_arr += "ival";
+            }
+            url = new URL(url_arr);
+            System.out.println(url_arr);
             if (url.toString().contains("https"))
             {
                 HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
