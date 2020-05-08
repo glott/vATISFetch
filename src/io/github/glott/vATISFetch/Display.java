@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -132,7 +131,7 @@ public class Display
         chooser.showOpenDialog(frame);
         File[] files = chooser.getSelectedFiles();
 
-        File configDirectory = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\vATIS\\Fetch");
+        File configDirectory = new File(Main.FETCH_DIR);
         if (!configDirectory.exists()) configDirectory.mkdir();
         try
         {

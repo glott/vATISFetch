@@ -2,15 +2,15 @@
 
 _by Josh Glottmann_
 
-**Version 1.3.0** - 05/06/2020
+**Version 1.3.4** - 05/08/2020
 
-Fetches AIRNC D-ATISs for use with [vATIS](http://radarcontact.me) by [Justin Shannon](https://github.com/JustinShannon)
+Fetches AIRNC D-ATISs for use with [vATIS](https://vatis.clowd.io/) by [Justin Shannon](https://github.com/JustinShannon)
 
 __[Download](https://github.com/glott/vATISFetch/blob/master/vATISFetch.jar?raw=true)__
 
 ### Installation
 
-1) Ensure that vATIS is installed into the default directory. Alternatively, create a folder called `vATIS` in `%appdata%`. 
+1) Ensure that vATIS is installed into the default directory. Alternatively, create a folder called `vATIS` in `%localappdata%`. 
 2) Download `vATISFetch.jar` at the link above and save it anywhere.
 3) Download the appropriate configuration files and store them in a easily accesible location. 
 4) Open `vATISFetch.jar` and click `Import Config(s)`, select all the `.json` configuration files and click `Open` to import them. 

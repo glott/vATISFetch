@@ -1,6 +1,7 @@
 package io.github.glott.vATISFetch.Handlers;
 
-import javax.net.ssl.HttpsURLConnection;
+import org.apache.commons.lang3.StringUtils;
+
 import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -32,42 +33,29 @@ public class ATISHandler
     {
         if (selectedItem == null) return;
         atis = new String[]{"", ""};
-        System.setProperty("jsse.enableSNIExtension", "false");
         try
         {
             String url_dep = webHandler.getURL(selectedItem, configLogic) + "dep";
-            if(url_dep.contains("clowd")){
+            if (url_dep.contains("clowd"))
                 url_dep += "arture";
-            }
             URL url = new URL(url_dep);
-            BufferedReader br;
-            if (url.toString().contains("https"))
-            {
-                HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            } else
-                br = new BufferedReader(new InputStreamReader(url.openStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
             String input;
             while ((input = br.readLine()) != null)
                 atis[0] += input + " ";
 
             String url_arr = webHandler.getURL(selectedItem, configLogic) + "arr";
-            if(url_arr.contains("clowd")){
+            if (url_arr.contains("clowd"))
                 url_arr += "ival";
-            }
             url = new URL(url_arr);
-            System.out.println(url_arr);
-            if (url.toString().contains("https"))
-            {
-                HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            } else
-                br = new BufferedReader(new InputStreamReader(url.openStream()));
+            br = new BufferedReader(new InputStreamReader(url.openStream()));
             while ((input = br.readLine()) != null)
                 atis[1] += input + " ";
+
             br.close();
             atis[0] = atis[0].replaceAll("\\s+", " ");
             atis[1] = atis[1].replaceAll("\\s+", " ");
+
         } catch (Exception ex)
         {
             ex.printStackTrace();
@@ -77,6 +65,7 @@ public class ATISHandler
 
     public String[] mergeATIS(String[] config)
     {
+
         String[] out = {"", "", ""};
         String[] tempGeneral = {"", ""};
 
@@ -88,6 +77,14 @@ public class ATISHandler
                     atis[i] = atis[i].replaceAll(s, "");
         }
 
+        if (atis[0].contains("DIGITAL ATIS NOT AVAILABLE"))
+        {
+            out[0] = "DIGITAL ATIS NOT AVAILABLE";
+            out[1] = "";
+            out[2] = "D-ATIS NOT AVAIL";
+            return out;
+        }
+
         if (config[0].equals("true") && atis[0].contains(config[1]))
         {
             String[] tempNotams = {"", ""};
@@ -95,15 +92,20 @@ public class ATISHandler
                 tempNotams[i] = atis[i].substring(atis[i].indexOf(config[1]) + config[1].length(), atis[i].indexOf(" ...ADVS YOU"));
             out[1] = tempNotams[0].length() > tempNotams[1].length() ? tempNotams[0] : tempNotams[1];
         }
+
         for (int i = 0; i < 2; i++)
         {
+            int pos = StringUtils.countMatches(atis[i], ").") > 1 ? i + 1 : 1;
+            int idx = StringUtils.ordinalIndexOf(atis[i], ")", pos) + 1;
+
             if (config[0].equals("true") && atis[0].contains(config[1]))
-                tempGeneral[i] = atis[i].substring(atis[i].indexOf(")") + 1, atis[i].indexOf(config[1]));
+                tempGeneral[i] = atis[i].substring(idx, StringUtils.ordinalIndexOf(atis[i], config[1], pos));
             else
-                tempGeneral[i] = atis[i].substring(atis[i].indexOf(")") + 1, atis[i].indexOf(" ...ADVS YOU"));
+                tempGeneral[i] = atis[i].substring(idx, StringUtils.ordinalIndexOf(atis[i], " ...ADVS YOU", pos));
             tempGeneral[i] = tempGeneral[i].substring(tempGeneral[i].indexOf(". ") + 2);
         }
-        if (!atis[0].equals(atis[1]))
+
+        if (!tempGeneral[0].equals(tempGeneral[1]))
             out[0] = tempGeneral[0] + tempGeneral[1];
         else
             out[0] = tempGeneral[0];

@@ -1,5 +1,6 @@
 package io.github.glott.vATISFetch.Handlers;
 
+import io.github.glott.vATISFetch.Main;
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -20,7 +21,7 @@ public class ConfigHandler
     @SuppressWarnings("unchecked, ConstantConditions, ResultOfMethodCallIgnored")
     public void initConfigSelection(JComboBox configSelection)
     {
-        File configDirectory = new File(System.getProperty("user.home") + "\\AppData\\Local\\vATIS\\Fetch");
+        File configDirectory = new File(Main.FETCH_DIR);
         if (!(configDirectory.exists() && configDirectory.isDirectory() && configDirectory.listFiles().length > 0))
         {
             configSelection.setEnabled(false);
@@ -45,7 +46,9 @@ public class ConfigHandler
         String update = configSelection.getSelectedItem().toString();
         configSelection.setSelectedItem(null);
         if (parseConfig(update, null))
-            runUpdate();
+            runUpdate("");
+        else
+            runUpdate("new/");
     }
 
     public boolean parseConfig(String air, JTextArea generalFetch)
@@ -55,7 +58,7 @@ public class ConfigHandler
         try
         {
             config = new String[]{"", "", "", ""};
-            FileReader fr = new FileReader(System.getProperty("user.home") + "\\AppData\\Local\\vATIS\\Fetch\\" + air + ".json");
+            FileReader fr = new FileReader(Main.FETCH_DIR + File.separator + air + ".json");
             Object obj = parser.parse(fr);
             JSONObject jsonObject = (JSONObject) obj;
 
@@ -66,7 +69,7 @@ public class ConfigHandler
             for (Object anIgnore : ignore) config[2] += "" + anIgnore + "\t";
             if (generalFetch != null && generalFetch.getText().contains("parse")) generalFetch.setText("");
             fr.close();
-            return jsonObject.get("facility") != null && jsonObject.get("facility").equals("ZZZ");
+            return jsonObject.get("facility") != null && jsonObject.get("facility").equals("ZYY");
         } catch (Exception ex)
         {
             ex.printStackTrace();
@@ -80,19 +83,19 @@ public class ConfigHandler
         return this.config;
     }
 
-    private void runUpdate()
+    private void runUpdate(String ver)
     {
         try
         {
-            File temp = new File(System.getProperty("user.home") + "\\AppData\\Local\\vATIS\\Fetch\\configs.txt");
+            File temp = new File(Main.FETCH_DIR + File.separator + "configs.txt");
             temp.createNewFile();
             FileUtils.copyURLToFile(new URL("http://glott.github.io/vaf/configs/configs.txt"), temp);
             Scanner sc = new Scanner(temp);
             while (sc.hasNext())
             {
                 String airport = sc.next();
-                URL down = new URL("http://glott.github.io/vaf/configs/" + airport + ".json");
-                File f = new File(System.getProperty("user.home") + "\\AppData\\Local\\vATIS\\Fetch\\" + airport + ".json");
+                URL down = new URL("http://glott.github.io/vaf/configs/" + ver + airport + ".json");
+                File f = new File(Main.FETCH_DIR + File.separator + airport + ".json");
                 if (f.exists())
                     FileUtils.copyURLToFile(down, f);
             }

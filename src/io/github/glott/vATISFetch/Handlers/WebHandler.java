@@ -14,10 +14,75 @@ import java.util.List;
 public class WebHandler
 {
 
+    static
+    {
+        disableSslVerification();
+    }
+
     private List<String> exceptions = new ArrayList<>();
     private String externalURL = "";
     private String internalURL = "";
     private String id = "";
+
+    private static String hexToString(String hexStr)
+    {
+        StringBuilder output = new StringBuilder();
+
+        for (int i = 0; i < hexStr.length(); i += 2)
+        {
+            String str = hexStr.substring(i, i + 2);
+            output.append((char) Integer.parseInt(str, 16));
+        }
+
+        return output.toString();
+    }
+
+    private static void disableSslVerification()
+    {
+        try
+        {
+            // Create a trust manager that does not validate certificate chains
+            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager()
+            {
+                public java.security.cert.X509Certificate[] getAcceptedIssuers()
+                {
+                    return null;
+                }
+
+                public void checkClientTrusted(X509Certificate[] certs, String authType)
+                {
+                }
+
+                public void checkServerTrusted(X509Certificate[] certs, String authType)
+                {
+                }
+            }
+            };
+
+            // Install the all-trusting trust manager
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+            // Create all-trusting host name verifier
+            HostnameVerifier allHostsValid = new HostnameVerifier()
+            {
+                public boolean verify(String hostname, SSLSession session)
+                {
+                    return true;
+                }
+            };
+
+            // Install the all-trusting host verifier
+            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+        } catch (NoSuchAlgorithmException e)
+        {
+            e.printStackTrace();
+        } catch (KeyManagementException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public void init()
     {
@@ -65,56 +130,5 @@ public class WebHandler
         if (externalURL.length() > 0 && id.length() > 0 && exceptions.size() > 0 && exceptions.contains(airport) && configLogic)
             return externalURL.replace("%ID%", id).replace("%ARPT%", airport);
         return internalURL.replace("%ARPT%", airport.toLowerCase());
-    }
-
-    private static String hexToString(String hexStr) {
-        StringBuilder output = new StringBuilder("");
-
-        for (int i = 0; i < hexStr.length(); i += 2) {
-            String str = hexStr.substring(i, i + 2);
-            output.append((char) Integer.parseInt(str, 16));
-        }
-
-        return output.toString();
-    }
-
-    static {
-        disableSslVerification();
-    }
-
-    private static void disableSslVerification() {
-        try
-        {
-            // Create a trust manager that does not validate certificate chains
-            TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
-                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-                public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                }
-                public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                }
-            }
-            };
-
-            // Install the all-trusting trust manager
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
-            // Create all-trusting host name verifier
-            HostnameVerifier allHostsValid = new HostnameVerifier() {
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            };
-
-            // Install the all-trusting host verifier
-            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        }
     }
 }
