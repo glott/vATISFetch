@@ -74,7 +74,7 @@ public class ATISHandler
             String[] ignore = config[2].split("\t");
             for (String s : ignore)
                 for (int i = 0; i < 2; i++)
-                    atis[i] = atis[i].replaceAll(s, "");
+                    atis[i] = atis[i].replaceAll(s, "").replaceAll("gtag.*", "");
         }
 
         if (atis[0].contains("DIGITAL ATIS NOT AVAILABLE"))
@@ -95,7 +95,7 @@ public class ATISHandler
 
         for (int i = 0; i < 2; i++)
         {
-            int pos = StringUtils.countMatches(atis[i], ").") > 1 ? i + 1 : 1;
+            int pos = StringUtils.countMatches(atis[i], ")") > 1 ? i + 1 : 1;
             int idx = StringUtils.ordinalIndexOf(atis[i], ")", pos) + 1;
 
             if (config[0].equals("true") && atis[0].contains(config[1]))
