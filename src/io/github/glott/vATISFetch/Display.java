@@ -5,8 +5,6 @@ import io.github.glott.vATISFetch.Handlers.ConfigHandler;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.nio.file.Files;
@@ -41,70 +39,58 @@ public class Display
         atisHandler = new ATISHandler();
         configHandler = new ConfigHandler();
 
-        closeButton.addActionListener(new ActionListener()
+        closeButton.addActionListener(e ->
         {
-            public void actionPerformed(ActionEvent e)
-            {
-                if (worker != null) worker.cancel(true);
-                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-            }
+            if (worker != null) worker.cancel(true);
+            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
         });
 
-        configSelection.addActionListener(new ActionListener()
+        configSelection.addActionListener(e ->
         {
-            public void actionPerformed(ActionEvent e)
-            {
-                if (configSelection.getSelectedItem() != null)
-                    configLogic = configHandler.parseConfig(configSelection.getSelectedItem().toString(), generalFetch);
-            }
+            if (configSelection.getSelectedItem() != null)
+                configLogic = configHandler.parseConfig(configSelection.getSelectedItem().toString(), generalFetch);
         });
 
-        fetchButton.addActionListener(new ActionListener()
+        fetchButton.addActionListener(e ->
         {
-            public void actionPerformed(ActionEvent e)
+            worker = new SwingWorker<Void, Void>()
             {
-                worker = new SwingWorker<Void, Void>()
+                @Override
+                protected Void doInBackground() throws Exception
                 {
-                    @Override
-                    protected Void doInBackground() throws Exception
-                    {
-                        atisHandler.fetchATIS(configSelection.getSelectedItem().toString(), notamFetch, configLogic);
-                        String[] out = atisHandler.mergeATIS(configHandler.getConfig());
-                        generalFetch.setText(out[0]);
-                        notamFetch.setText(out[1]);
-                        fetchButton.setText(out[2]);
-                        return null;
-                    }
+                    atisHandler.fetchATIS(configSelection.getSelectedItem().toString(), notamFetch, configLogic);
+                    String[] out = atisHandler.mergeATIS(configHandler.getConfig());
+                    generalFetch.setText(out[0]);
+                    notamFetch.setText(out[1]);
+                    fetchButton.setText(out[2]);
+                    return null;
+                }
 
-                    @Override
-                    protected void done()
-                    {
-                    }
-                };
-                worker.execute();
-            }
+                @Override
+                protected void done()
+                {
+                }
+            };
+            worker.execute();
         });
 
-        importButton.addActionListener(new ActionListener()
+        importButton.addActionListener(e ->
         {
-            public void actionPerformed(ActionEvent e)
+            worker = new SwingWorker<Void, Void>()
             {
-                worker = new SwingWorker<Void, Void>()
+                @Override
+                protected Void doInBackground() throws Exception
                 {
-                    @Override
-                    protected Void doInBackground() throws Exception
-                    {
-                        importConfigs();
-                        return null;
-                    }
+                    importConfigs();
+                    return null;
+                }
 
-                    @Override
-                    protected void done()
-                    {
-                    }
-                };
-                worker.execute();
-            }
+                @Override
+                protected void done()
+                {
+                }
+            };
+            worker.execute();
         });
 
         openConfigLabel.setToolTipText(Main.VERSION);
