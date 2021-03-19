@@ -28,6 +28,7 @@ public class Display
     private JButton fetchButton;
     private JButton closeButton;
     private JButton importButton;
+    private JLabel openConfigLabel;
 
     private SwingWorker worker;
 
@@ -105,6 +106,8 @@ public class Display
                 worker.execute();
             }
         });
+
+        openConfigLabel.setToolTipText(Main.VERSION);
 
     }
 

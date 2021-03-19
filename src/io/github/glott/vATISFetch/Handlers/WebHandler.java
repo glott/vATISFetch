@@ -1,5 +1,7 @@
 package io.github.glott.vATISFetch.Handlers;
 
+import io.github.glott.vATISFetch.Main;
+
 import javax.net.ssl.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -88,7 +90,7 @@ public class WebHandler
     {
         try
         {
-            URL url = new URL("http://glott.github.io/vaf/Exceptions.data");
+            URL url = new URL(Main.URL_BASE + "vaf/Exceptions.data");
             BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
             String input;
             if ((input = br.readLine()) != null)
@@ -100,7 +102,7 @@ public class WebHandler
 
         try
         {
-            URL url = new URL("http://glott.github.io/vaf/URL.data");
+            URL url = new URL(Main.URL_BASE + "vaf/URL.data");
             BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
             String input;
             if ((input = br.readLine()) != null)
@@ -112,7 +114,7 @@ public class WebHandler
 
         try
         {
-            URL url = new URL("http://glott.github.io/vaf/ID.data");
+            URL url = new URL(Main.URL_BASE + "vaf/ID.data");
             BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
             String input;
             if ((input = br.readLine()) != null)

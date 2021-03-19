@@ -89,12 +89,12 @@ public class ConfigHandler
         {
             File temp = new File(Main.FETCH_DIR + File.separator + "configs.txt");
             temp.createNewFile();
-            FileUtils.copyURLToFile(new URL("http://glott.github.io/vaf/configs/configs.txt"), temp);
+            FileUtils.copyURLToFile(new URL(Main.URL_BASE + "vaf/configs/configs.txt"), temp);
             Scanner sc = new Scanner(temp);
             while (sc.hasNext())
             {
                 String airport = sc.next();
-                URL down = new URL("http://glott.github.io/vaf/configs/" + ver + airport + ".json");
+                URL down = new URL(Main.URL_BASE + "vaf/configs/" + ver + airport + ".json");
                 File f = new File(Main.FETCH_DIR + File.separator + airport + ".json");
                 if (f.exists())
                     FileUtils.copyURLToFile(down, f);

@@ -58,7 +58,7 @@
           <wrapStyleWord value="false"/>
         </properties>
       </component>
-      <component id="1c4b9" class="javax.swing.JLabel">
+      <component id="1c4b9" class="javax.swing.JLabel" binding="openConfigLabel">
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false">
             <preferred-size width="80" height="-1"/>
