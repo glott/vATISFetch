@@ -113,7 +113,8 @@ public class ATISHandler
             out[0] = tempGeneral[0] + tempGeneral[1];
         else
             out[0] = tempGeneral[0];
-        out[2] = !atis[1].replaceAll("INFO [A-Z] [0-2][0-9][0-9][0-9]Z", "").equals(atis[1]) ? atis[1].substring(atis[1].indexOf("INFO "), atis[1].indexOf("INFO ") + 12) : "Fetch ATIS";
+        out[2] = !atis[N - 1].replaceAll("INFO [A-Z] [0-2][0-9][0-9][0-9]Z", "").equals(atis[N - 1]) ?
+                atis[N - 1].substring(atis[N - 1].indexOf("INFO "), atis[N - 1].indexOf("INFO ") + 12) : "Fetch ATIS";
         return out;
     }
 }
