@@ -114,14 +114,12 @@ public class WebHandler
         } catch (Exception ignored)
         {
         }
-        internalURL = "https://datis.clowd.io/%ARPT%#";
+        internalURL = "https://datis.clowd.io/api/%ARPT%";
 
     }
 
-    public String getURL(String airport, boolean configLogic)
+    public String getURL(String airport)
     {
-        if (externalURL.length() > 0 && id.length() > 0 && exceptions.size() > 0 && exceptions.contains(airport) && configLogic)
-            return externalURL.replace("%ID%", id).replace("%ARPT%", airport);
         return internalURL.replace("%ARPT%", airport.toLowerCase());
     }
 }

@@ -32,7 +32,6 @@ public class Display
 
     private ATISHandler atisHandler;
     private ConfigHandler configHandler;
-    private boolean configLogic = false;
 
     public Display()
     {
@@ -48,7 +47,7 @@ public class Display
         configSelection.addActionListener(e ->
         {
             if (configSelection.getSelectedItem() != null)
-                configLogic = configHandler.parseConfig(configSelection.getSelectedItem().toString(), generalFetch);
+                configHandler.parseConfig(configSelection.getSelectedItem().toString(), generalFetch);
         });
 
         fetchButton.addActionListener(e ->
@@ -58,7 +57,7 @@ public class Display
                 @Override
                 protected Void doInBackground() throws Exception
                 {
-                    atisHandler.fetchATIS(configSelection.getSelectedItem().toString(), notamFetch, configLogic);
+                    atisHandler.fetchATIS(configSelection.getSelectedItem().toString(), notamFetch);
                     String[] out = atisHandler.mergeATIS(configHandler.getConfig());
                     generalFetch.setText(out[0]);
                     notamFetch.setText(out[1]);

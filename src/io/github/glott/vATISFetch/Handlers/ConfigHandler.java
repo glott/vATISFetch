@@ -43,39 +43,35 @@ public class ConfigHandler
                 return;
             }
         }
-        String update = configSelection.getSelectedItem().toString();
+
         configSelection.setSelectedItem(null);
-        if (parseConfig(update, null))
-            runUpdate("");
-        else
-            runUpdate("new/");
+        runUpdate();
     }
 
-    public boolean parseConfig(String air, JTextArea generalFetch)
+    public void parseConfig(String air, JTextArea generalFetch)
     {
-        if (air.equals("NONE")) return false;
+        if (air.equals("NONE")) return;
+
         JSONParser parser = new JSONParser();
         try
         {
             config = new String[]{"", "", "", ""};
             FileReader fr = new FileReader(Main.FETCH_DIR + File.separator + air + ".json");
-            Object obj = parser.parse(fr);
-            JSONObject jsonObject = (JSONObject) obj;
+            JSONObject jsonObject = (JSONObject) parser.parse(fr);
 
             config[0] = "" + jsonObject.get("has_notams");
             config[1] = "" + jsonObject.get("notam_start");
 
             JSONArray ignore = (JSONArray) jsonObject.get("ignore");
             for (Object anIgnore : ignore) config[2] += "" + anIgnore + "\t";
+
             if (generalFetch != null && generalFetch.getText().contains("parse")) generalFetch.setText("");
             fr.close();
-            return jsonObject.get("facility") != null && jsonObject.get("facility").equals("ZYY");
         } catch (Exception ex)
         {
             ex.printStackTrace();
             if (generalFetch != null) generalFetch.setText("Unable to parse config!");
         }
-        return false;
     }
 
     public String[] getConfig()
@@ -83,7 +79,7 @@ public class ConfigHandler
         return this.config;
     }
 
-    private void runUpdate(String ver)
+    private void runUpdate()
     {
         try
         {
@@ -94,7 +90,7 @@ public class ConfigHandler
             while (sc.hasNext())
             {
                 String airport = sc.next();
-                URL down = new URL(Main.URL_BASE + "vaf/configs/" + ver + airport + ".json");
+                URL down = new URL(Main.URL_BASE + "vaf/configs/" + airport + ".json");
                 File f = new File(Main.FETCH_DIR + File.separator + airport + ".json");
                 if (f.exists())
                     FileUtils.copyURLToFile(down, f);

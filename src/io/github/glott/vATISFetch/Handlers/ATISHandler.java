@@ -1,6 +1,9 @@
 package io.github.glott.vATISFetch.Handlers;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import javax.swing.*;
 import java.io.BufferedReader;
@@ -29,32 +32,32 @@ public class ATISHandler
         return matcher.find() ? matcher.start() : -1;
     }
 
-    public void fetchATIS(String selectedItem, JTextArea notamFetch, boolean configLogic)
+    public void fetchATIS(String selectedItem, JTextArea notamFetch)
     {
         if (selectedItem == null) return;
         atis = new String[]{"", ""};
+
         try
         {
-            String url_dep = webHandler.getURL(selectedItem, configLogic) + "dep";
-            if (url_dep.contains("clowd"))
-                url_dep += "arture";
-            URL url = new URL(url_dep);
+            URL url = new URL(webHandler.getURL(selectedItem));
+            JSONParser parser = new JSONParser();
             BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+            String json = "";
             String input;
             while ((input = br.readLine()) != null)
-                atis[0] += input + " ";
+                json += input;
 
-            String url_arr = webHandler.getURL(selectedItem, configLogic) + "arr";
-            if (url_arr.contains("clowd"))
-                url_arr += "ival";
-            url = new URL(url_arr);
-            br = new BufferedReader(new InputStreamReader(url.openStream()));
-            while ((input = br.readLine()) != null)
-                atis[1] += input + " ";
+            JSONArray jsonArray = (JSONArray) parser.parse(json);
+            for (int i = 0; i < jsonArray.size(); i++)
+            {
+                JSONObject obj = (JSONObject) jsonArray.get(i);
+                String type = obj.get("type").toString();
 
-            br.close();
-            atis[0] = atis[0].replaceAll("\\s+", " ");
-            atis[1] = atis[1].replaceAll("\\s+", " ");
+                if (type.equals("dep") || type.equals("combined"))
+                    atis[0] = obj.get("datis").toString();
+                else if (type.equals("arr"))
+                    atis[1] = obj.get("datis").toString();
+            }
 
         } catch (Exception ex)
         {
@@ -85,6 +88,7 @@ public class ATISHandler
             return out;
         }
 
+        // TODO FIX SINGLE ARR/DEP
         if (config[0].equals("true") && atis[0].contains(config[1]))
         {
             String[] tempNotams = {"", ""};
@@ -92,6 +96,7 @@ public class ATISHandler
                 tempNotams[i] = atis[i].substring(atis[i].indexOf(config[1]) + config[1].length(), atis[i].indexOf(" ...ADVS YOU"));
             out[1] = tempNotams[0].length() > tempNotams[1].length() ? tempNotams[0] : tempNotams[1];
         }
+        System.out.println(atis[0].toString() + "\n" + atis[1].toString());
 
         for (int i = 0; i < 2; i++)
         {
