@@ -120,6 +120,10 @@ public class WebHandler
 
     public String getURL(String airport)
     {
+        boolean configLogic = Boolean.getBoolean("false");
+        if (externalURL.length() > 0 && id.length() > 0 && exceptions.size() > 0 && exceptions.contains(airport) && configLogic)
+            return externalURL.replace("%ID%", id).replace("%ARPT%", airport);
+
         return internalURL.replace("%ARPT%", airport.toLowerCase());
     }
 }

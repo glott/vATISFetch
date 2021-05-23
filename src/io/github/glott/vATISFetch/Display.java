@@ -30,8 +30,8 @@ public class Display
 
     private SwingWorker worker;
 
-    private ATISHandler atisHandler;
-    private ConfigHandler configHandler;
+    private final ATISHandler atisHandler;
+    private final ConfigHandler configHandler;
 
     public Display()
     {
@@ -55,7 +55,7 @@ public class Display
             worker = new SwingWorker<Void, Void>()
             {
                 @Override
-                protected Void doInBackground() throws Exception
+                protected Void doInBackground()
                 {
                     atisHandler.fetchATIS(configSelection.getSelectedItem().toString(), notamFetch);
                     String[] out = atisHandler.mergeATIS(configHandler.getConfig());
@@ -78,7 +78,7 @@ public class Display
             worker = new SwingWorker<Void, Void>()
             {
                 @Override
-                protected Void doInBackground() throws Exception
+                protected Void doInBackground()
                 {
                     importConfigs();
                     return null;

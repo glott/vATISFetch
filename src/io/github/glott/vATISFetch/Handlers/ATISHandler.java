@@ -16,7 +16,7 @@ public class ATISHandler
 {
 
     private String[] atis = {"", ""};
-    private WebHandler webHandler;
+    private final WebHandler webHandler;
 
     public ATISHandler()
     {
@@ -42,15 +42,15 @@ public class ATISHandler
             URL url = new URL(webHandler.getURL(selectedItem));
             JSONParser parser = new JSONParser();
             BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-            String json = "";
+            StringBuilder json = new StringBuilder();
             String input;
             while ((input = br.readLine()) != null)
-                json += input;
+                json.append(input);
 
-            JSONArray jsonArray = (JSONArray) parser.parse(json);
-            for (int i = 0; i < jsonArray.size(); i++)
+            JSONArray jsonArray = (JSONArray) parser.parse(json.toString());
+            for (Object o : jsonArray)
             {
-                JSONObject obj = (JSONObject) jsonArray.get(i);
+                JSONObject obj = (JSONObject) o;
                 String type = obj.get("type").toString();
 
                 if (type.equals("dep") || type.equals("combined"))
@@ -71,6 +71,7 @@ public class ATISHandler
 
         String[] out = {"", "", ""};
         String[] tempGeneral = {"", ""};
+        int N = atis[1].length() > 1 ? 2 : 1;
 
         if (config[2].length() > 1)
         {
@@ -88,17 +89,15 @@ public class ATISHandler
             return out;
         }
 
-        // TODO FIX SINGLE ARR/DEP
         if (config[0].equals("true") && atis[0].contains(config[1]))
         {
             String[] tempNotams = {"", ""};
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < N; i++)
                 tempNotams[i] = atis[i].substring(atis[i].indexOf(config[1]) + config[1].length(), atis[i].indexOf(" ...ADVS YOU"));
             out[1] = tempNotams[0].length() > tempNotams[1].length() ? tempNotams[0] : tempNotams[1];
         }
-        System.out.println(atis[0].toString() + "\n" + atis[1].toString());
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < N; i++)
         {
             int pos = StringUtils.countMatches(atis[i], "ADVS") > 1 ? i + 1 : 1;
             int idx = StringUtils.ordinalIndexOf(atis[i], ")", pos) + 1;
@@ -110,7 +109,7 @@ public class ATISHandler
             tempGeneral[i] = tempGeneral[i].substring(tempGeneral[i].indexOf(". ") + 2);
         }
 
-        if (!tempGeneral[0].equals(tempGeneral[1]))
+        if (N == 2)
             out[0] = tempGeneral[0] + tempGeneral[1];
         else
             out[0] = tempGeneral[0];
